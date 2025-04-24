@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Uploader with Cloudinary</title>
+    <title>Assets by Thur</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -83,7 +83,7 @@
         .file-label {
             display: block;
             cursor: pointer;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .upload-icon {
@@ -101,6 +101,18 @@
         .upload-hint {
             color: var(--light-text);
             font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .file-name {
+            font-size: 14px;
+            color: var(--primary);
+            margin-top: 10px;
+            word-break: break-all;
+            padding: 8px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 6px;
+            display: none;
         }
         
         button {
@@ -115,6 +127,8 @@
             transition: all 0.2s ease;
             display: inline-block;
             margin: 5px;
+            width: 100%;
+            max-width: 300px;
         }
         
         button:hover {
@@ -135,6 +149,13 @@
         
         button.secondary:hover {
             background: rgba(67, 97, 238, 0.05);
+        }
+        
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
         
         #result {
@@ -158,6 +179,7 @@
             display: flex;
             margin-bottom: 20px;
             flex-wrap: wrap;
+            gap: 10px;
         }
         
         #imageLink {
@@ -167,8 +189,6 @@
             border-radius: 6px;
             font-size: 14px;
             min-width: 200px;
-            margin-right: 10px;
-            margin-bottom: 10px;
         }
         
         #preview {
@@ -192,11 +212,13 @@
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
         }
         
         @media (max-width: 600px) {
             .container {
-                padding: 20px;
+                padding: 20px 15px;
             }
             
             h1 {
@@ -204,13 +226,12 @@
             }
             
             .upload-container {
-                padding: 20px 15px;
+                padding: 25px 15px;
+                margin: 15px 0;
             }
             
-            button {
-                padding: 10px 20px;
-                width: 100%;
-                margin: 5px 0;
+            .upload-text {
+                font-size: 16px;
             }
             
             .url-container {
@@ -221,13 +242,18 @@
                 margin-right: 0;
                 margin-bottom: 10px;
             }
+            
+            button {
+                padding: 12px;
+                font-size: 15px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Image Uploader</h1>
-        <p class="subtitle">Upload gambar ke Cloudinary dengan mudah</p>
+        <h1>Assets by Thur</h1>
+        <p class="subtitle">Upload gambar dan dapatkan link dengan mudah</p>
         
         <div class="upload-container" id="dropArea">
             <label for="fileInput" class="file-label">
@@ -235,8 +261,12 @@
                 <div class="upload-text">Pilih gambar atau seret ke sini</div>
                 <div class="upload-hint">Format: JPG, PNG, GIF (Max 10MB)</div>
             </label>
+            <div class="file-name" id="fileName"></div>
             <input type="file" id="fileInput" accept="image/*">
-            <button onclick="uploadImage()">Upload Image</button>
+        </div>
+        
+        <div class="button-group">
+            <button id="uploadBtn" onclick="uploadImage()" disabled>Upload Image</button>
         </div>
         
         <div id="result">
@@ -257,10 +287,25 @@
     </div>
 
     <script>
-        // Drag and drop functionality
+        // Elements
         const dropArea = document.getElementById('dropArea');
         const fileInput = document.getElementById('fileInput');
+        const fileName = document.getElementById('fileName');
+        const uploadBtn = document.getElementById('uploadBtn');
         
+        // Show selected file name and enable upload button
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                fileName.textContent = this.files[0].name;
+                fileName.style.display = 'block';
+                uploadBtn.disabled = false;
+            } else {
+                fileName.style.display = 'none';
+                uploadBtn.disabled = true;
+            }
+        });
+        
+        // Drag and drop functionality
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropArea.addEventListener(eventName, preventDefaults, false);
         });
@@ -291,12 +336,16 @@
         function handleDrop(e) {
             const dt = e.dataTransfer;
             const files = dt.files;
-            fileInput.files = files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                fileName.textContent = files[0].name;
+                fileName.style.display = 'block';
+                uploadBtn.disabled = false;
+            }
         }
         
-        // Original functions with added enhancements
+        // Upload function
         async function uploadImage() {
-            const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
             
             if (!file) {
@@ -314,7 +363,6 @@
             formData.append('file', file);
 
             try {
-                const uploadBtn = document.querySelector('button[onclick="uploadImage()"]');
                 uploadBtn.disabled = true;
                 uploadBtn.textContent = 'Uploading...';
 
@@ -334,6 +382,9 @@
                 document.getElementById('imageLink').value = result.url;
                 document.getElementById('result').style.display = 'block';
                 
+                // Scroll to result
+                document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+                
                 // Show success message
                 const successMessage = document.getElementById('successMessage');
                 successMessage.style.display = 'block';
@@ -341,13 +392,12 @@
                     successMessage.style.display = 'none';
                 }, 3000);
                 
-                uploadBtn.disabled = false;
                 uploadBtn.textContent = 'Upload Image';
             } catch (error) {
                 console.error('Error:', error);
                 alert('Error: ' + error.message);
-                document.querySelector('button[onclick="uploadImage()"]').disabled = false;
-                document.querySelector('button[onclick="uploadImage()"]').textContent = 'Upload Image';
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = 'Upload Image';
             }
         }
         
@@ -369,9 +419,14 @@
         }
         
         function resetForm() {
-            document.getElementById('fileInput').value = '';
+            fileInput.value = '';
+            fileName.style.display = 'none';
             document.getElementById('result').style.display = 'none';
             document.getElementById('preview').src = '';
+            uploadBtn.disabled = true;
+            
+            // Scroll back to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
 </body>
