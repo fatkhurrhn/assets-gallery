@@ -176,19 +176,41 @@
         }
         
         .url-container {
-            display: flex;
+            position: relative;
             margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
         }
         
         #imageLink {
-            flex: 1;
-            padding: 12px 15px;
+            width: 100%;
+            padding: 12px 50px 12px 15px;
             border: 1px solid var(--border);
             border-radius: 6px;
             font-size: 14px;
-            min-width: 200px;
+            padding-right: 100px;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            right: 4px;
+            top: 4px;
+            bottom: 4px;
+            padding: 0 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        .copy-btn:hover {
+            background: var(--primary-hover);
+        }
+        
+        .copy-btn.copied {
+            background: var(--success);
+            width: auto;
         }
         
         #preview {
@@ -234,18 +256,14 @@
                 font-size: 16px;
             }
             
-            .url-container {
-                flex-direction: column;
-            }
-            
-            #imageLink {
-                margin-right: 0;
-                margin-bottom: 10px;
-            }
-            
             button {
                 padding: 12px;
                 font-size: 15px;
+            }
+            
+            .copy-btn {
+                padding: 0 10px;
+                font-size: 13px;
             }
         }
     </style>
@@ -275,7 +293,7 @@
             
             <div class="url-container">
                 <input type="text" id="imageLink" readonly>
-                <button onclick="copyLink()">Copy URL</button>
+                <button class="copy-btn" id="copyBtn">Copy</button>
             </div>
             
             <div class="button-group">
@@ -292,6 +310,7 @@
         const fileInput = document.getElementById('fileInput');
         const fileName = document.getElementById('fileName');
         const uploadBtn = document.getElementById('uploadBtn');
+        const copyBtn = document.getElementById('copyBtn');
         
         // Show selected file name and enable upload button
         fileInput.addEventListener('change', function() {
@@ -364,7 +383,7 @@
 
             try {
                 uploadBtn.disabled = true;
-                uploadBtn.textContent = 'Uploading...';
+                uploadBtn.textContent = 'tunggu bentar...';
 
                 const response = await fetch('/api/upload', {
                     method: 'POST',
@@ -401,22 +420,22 @@
             }
         }
         
-        function copyLink() {
+        // Copy link function
+        copyBtn.addEventListener('click', function() {
             const link = document.getElementById('imageLink');
             link.select();
             document.execCommand('copy');
             
-            // Show temporary feedback
-            const copyBtn = document.querySelector('button[onclick="copyLink()"]');
+            // Change button text temporarily
             const originalText = copyBtn.textContent;
             copyBtn.textContent = 'Copied!';
-            copyBtn.style.background = 'var(--success)';
+            copyBtn.classList.add('copied');
             
             setTimeout(() => {
                 copyBtn.textContent = originalText;
-                copyBtn.style.background = 'var(--primary)';
+                copyBtn.classList.remove('copied');
             }, 2000);
-        }
+        });
         
         function resetForm() {
             fileInput.value = '';
