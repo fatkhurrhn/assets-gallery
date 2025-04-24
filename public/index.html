@@ -395,7 +395,7 @@
 
             try {
                 uploadBtn.disabled = true;
-                uploadBtn.textContent = 'Uploading...';
+                uploadBtn.textContent = 'tunggu bentar...';
 
                 const response = await fetch('/api/upload', {
                     method: 'POST',
@@ -443,11 +443,11 @@
             icon.className = 'ri-check-line';
             copyBtn.classList.add('success');
             
-            // Reset after 2 seconds
+            // Reset
             setTimeout(() => {
                 icon.className = 'ri-file-copy-2-line';
                 copyBtn.classList.remove('success');
-            }, 2000);
+            }, 500);
         });
         
         function resetForm() {
