@@ -1,6 +1,19 @@
-import { createWriteStream } from 'fs';
-import { pipeline } from 'stream/promises';
-import { v4 as uuidv4 } from 'uuid';
+import cloudinary from 'cloudinary';
+import { IncomingForm } from 'formidable';
+
+// Configure Cloudinary
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true
+});
+
+export const config = {
+  api: {
+    bodyParser: false
+  }
+};
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -8,28 +21,38 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Cek content-type
-    if (!req.headers['content-type']?.startsWith('image/')) {
-      return res.status(400).json({ error: 'Invalid content type' });
+    // Parse form data
+    const data = await new Promise((resolve, reject) => {
+      const form = new IncomingForm();
+      form.parse(req, (err, fields, files) => {
+        if (err) return reject(err);
+        resolve({ fields, files });
+      });
+    });
+
+    const file = data.files.file;
+    
+    if (!file) {
+      return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    // Generate unique filename
-    const fileExtension = req.headers['content-type'].split('/')[1];
-    const filename = `${uuidv4()}.${fileExtension}`;
-    const filePath = `/tmp/${filename}`; // Gunakan /tmp di Vercel
+    // Upload to Cloudinary
+    const result = await cloudinary.v2.uploader.upload(file.filepath, {
+      folder: 'assets-gallery',
+      use_filename: true,
+      unique_filename: false
+    });
 
-    // Write file
-    await pipeline(req, createWriteStream(filePath));
-
-    // Return the URL
-    const fileUrl = `https://${req.headers.host}/api/uploads/${filename}`;
-    return res.status(200).json({ 
-      success: true, 
-      url: fileUrl,
-      filename: filename
+    return res.status(200).json({
+      success: true,
+      url: result.secure_url,
+      public_id: result.public_id
     });
   } catch (error) {
     console.error('Upload error:', error);
-    return res.status(500).json({ error: 'Upload failed', details: error.message });
+    return res.status(500).json({ 
+      error: 'Upload failed',
+      details: error.message 
+    });
   }
 }

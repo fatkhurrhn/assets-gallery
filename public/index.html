@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Image Uploader</title>
+    <title>Image Uploader with Cloudinary</title>
     <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
         .upload-container { border: 2px dashed #ccc; padding: 20px; text-align: center; margin: 20px 0; }
-        #preview { max-width: 100%; margin-top: 20px; }
+        #preview { max-width: 100%; max-height: 300px; margin-top: 20px; }
         #imageLink { width: 100%; padding: 8px; margin: 10px 0; }
+        button { padding: 10px 15px; background: #0070f3; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0061d5; }
     </style>
 </head>
 <body>
     <h1>Image Uploader</h1>
+    <p>Upload gambar ke Cloudinary</p>
     
     <div class="upload-container">
         <input type="file" id="fileInput" accept="image/*">
@@ -26,44 +29,46 @@
 
     <script>
         async function uploadImage() {
-    const fileInput = document.getElementById('fileInput');
-    const file = fileInput.files[0];
-    
-    if (!file) {
-        alert('Please select an image first!');
-        return;
-    }
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select an image first!');
+                return;
+            }
 
-    try {
-        const response = await fetch('/api/upload', {
-            method: 'POST',
-            headers: {
-                'Content-Type': file.type,
-                'X-File-Name': encodeURIComponent(file.name)
-            },
-            body: file
-        });
-        
-        // Cek jika response valid
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Server error: ${errorText}`);
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Upload failed');
+                }
+                
+                const result = await response.json();
+                
+                document.getElementById('preview').src = result.url;
+                document.getElementById('imageLink').value = result.url;
+                document.getElementById('result').style.display = 'block';
+                alert('Image uploaded successfully!');
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error: ' + error.message);
+            }
         }
         
-        const result = await response.json();
-        
-        if (result.success) {
-            document.getElementById('preview').src = result.url;
-            document.getElementById('imageLink').value = result.url;
-            document.getElementById('result').style.display = 'block';
-            alert('Image uploaded successfully!');
-        } else {
-            alert('Upload failed: ' + (result.error || 'Unknown error'));
+        function copyLink() {
+            const link = document.getElementById('imageLink');
+            link.select();
+            document.execCommand('copy');
+            alert('URL copied to clipboard!');
         }
-    } catch (error) {
-        console.error('Upload error:', error);
-        alert('Error: ' + error.message);
-    }
-}
     </script>
+</body>
 </html>
