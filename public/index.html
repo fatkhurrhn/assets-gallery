@@ -26,47 +26,44 @@
 
     <script>
         async function uploadImage() {
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
-            
-            if (!file) {
-                alert('Please select an image first!');
-                return;
-            }
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        alert('Please select an image first!');
+        return;
+    }
 
-            const formData = new FormData();
-            formData.append('file', file);
-
-            try {
-                const response = await fetch('/api/upload', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Content-Type': file.type
-                    }
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    document.getElementById('preview').src = result.url;
-                    document.getElementById('imageLink').value = result.url;
-                    document.getElementById('result').style.display = 'block';
-                    alert('Image uploaded successfully!');
-                } else {
-                    alert('Upload failed: ' + (result.error || 'Unknown error'));
-                }
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
+    try {
+        const response = await fetch('/api/upload', {
+            method: 'POST',
+            headers: {
+                'Content-Type': file.type,
+                'X-File-Name': encodeURIComponent(file.name)
+            },
+            body: file
+        });
+        
+        // Cek jika response valid
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Server error: ${errorText}`);
         }
         
-        function copyLink() {
-            const link = document.getElementById('imageLink');
-            link.select();
-            document.execCommand('copy');
-            alert('URL copied to clipboard!');
+        const result = await response.json();
+        
+        if (result.success) {
+            document.getElementById('preview').src = result.url;
+            document.getElementById('imageLink').value = result.url;
+            document.getElementById('result').style.display = 'block';
+            alert('Image uploaded successfully!');
+        } else {
+            alert('Upload failed: ' + (result.error || 'Unknown error'));
         }
+    } catch (error) {
+        console.error('Upload error:', error);
+        alert('Error: ' + error.message);
+    }
+}
     </script>
-</body>
 </html>
