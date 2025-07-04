@@ -1,12 +1,12 @@
-# 🖼️ Assets Link Generator
+# 🖼️ Convert Image to Link
 
 [![Powered by React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-[![Deploy on Vercel](https://img.shields.io/badge/Live-Demo-black?style=flat&logo=vercel)](https://assets-gallery.vercel.app/)
+[![Deploy on Vercel](https://img.shields.io/badge/Live-Demo-black?style=flat&logo=vercel)](https://convert-image-to-link.vercel.app/)
 [![Cloudinary Storage](https://img.shields.io/badge/Cloudinary-Asset%20Storage-blue?logo=cloudinary&logoColor=white)](https://cloudinary.com/)
 
-**Assets** adalah aplikasi web sederhana namun powerful yang memungkinkan kamu untuk **mengunggah gambar dan langsung mendapatkan URL siap pakai**. Cocok banget buat kebutuhan developer, UI designer, dokumentasi projek, atau siapa pun yang butuh hosting gambar secara cepat.
+**Convert Image to Link** adalah aplikasi web sederhana namun powerful yang memungkinkan kamu untuk **mengunggah gambar dan langsung mendapatkan URL siap pakai**. Cocok banget buat kebutuhan developer, UI designer, dokumentasi projek, atau siapa pun yang butuh hosting gambar secara cepat.
 
-> 🔗 Demo langsung: [assets-gallery.vercel.app](https://assets-gallery.vercel.app/)
+> 🔗 Demo langsung: [convert-image-to-link.vercel.app](https://convert-image-to-link.vercel.app/)
 
 ---
 
