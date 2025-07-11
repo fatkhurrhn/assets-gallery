@@ -20,6 +20,7 @@
                         'light-text': '#6c757d',
                         border: '#dee2e6',
                         success: '#4bb543',
+                        danger: '#dc3545',
                     },
                     fontFamily: {
                         poppins: ['Poppins', 'sans-serif'],
@@ -31,6 +32,32 @@
 </head>
 
 <body class="font-poppins bg-[#f5f7ff] min-h-screen p-5">
+    <!-- Video Size Warning Modal -->
+    <div id="videoSizeModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-danger flex items-center">
+                    <i class="ri-alert-fill mr-2"></i> Warning
+                </h3>
+                <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
+                    <i class="ri-close-line text-2xl"></i>
+                </button>
+            </div>
+            <p class="text-gray-700 mb-4">
+                Your video file exceeds the 5MB limit. Large videos may take longer to upload and may not be supported.
+                Are you sure you want to continue?
+            </p>
+            <div class="flex justify-end space-x-3">
+                <button id="cancelUploadBtn" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">
+                    Cancel
+                </button>
+                <button id="confirmUploadBtn" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover">
+                    Continue Upload
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden p-6 md:p-8">
         <h1 class="text-primary text-2xl md:text-3xl font-semibold text-center mb-2">Assets by Thur [updated]</h1>
         <p class="text-light-text text-center mb-8">Upload gambar/video dan dapatkan link dengan mudah</p>
@@ -84,7 +111,7 @@
             </div>
 
             <div class="flex justify-center">
-                <button id="uploadVideoBtn" onclick="uploadVideo()" disabled
+                <button id="uploadVideoBtn" onclick="checkVideoSize()" disabled
                     class="px-6 py-3 bg-primary hover:bg-primary-hover text-white font-medium rounded-lg w-full max-w-xs transition-all hover:-translate-y-0.5 hover:shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none">
                     Upload Video
                 </button>
@@ -105,6 +132,9 @@
             </div>
 
             <div id="previewContainer" class="mb-6">
+                <div id="fileInfo" class="text-center text-sm text-gray-600 mb-3 hidden">
+                    File size: <span id="fileSize"></span>
+                </div>
                 <img id="preview" class="max-w-full max-h-96 mx-auto rounded-lg shadow-md hidden">
                 <video id="videoPreview" controls
                     class="max-w-full max-h-96 mx-auto rounded-lg shadow-md hidden"></video>
@@ -135,6 +165,12 @@
         const videoTab = document.getElementById('videoTab');
         const imageUploadSection = document.getElementById('imageUploadSection');
         const videoUploadSection = document.getElementById('videoUploadSection');
+        const videoSizeModal = document.getElementById('videoSizeModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelUploadBtn = document.getElementById('cancelUploadBtn');
+        const confirmUploadBtn = document.getElementById('confirmUploadBtn');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileSizeSpan = document.getElementById('fileSize');
 
         // Tab switching
         imageTab.addEventListener('click', () => {
@@ -161,9 +197,15 @@
                 fileName.textContent = this.files[0].name;
                 fileName.classList.remove('hidden');
                 uploadBtn.disabled = false;
+                
+                // Show file size in preview if available
+                const fileSizeMB = (this.files[0].size / (1024 * 1024)).toFixed(2);
+                fileSizeSpan.textContent = `${fileSizeMB} MB`;
+                fileInfo.classList.remove('hidden');
             } else {
                 fileName.classList.add('hidden');
                 uploadBtn.disabled = true;
+                fileInfo.classList.add('hidden');
             }
         });
 
@@ -172,9 +214,15 @@
                 videoFileName.textContent = this.files[0].name;
                 videoFileName.classList.remove('hidden');
                 uploadVideoBtn.disabled = false;
+                
+                // Show file size in preview if available
+                const fileSizeMB = (this.files[0].size / (1024 * 1024)).toFixed(2);
+                fileSizeSpan.textContent = `${fileSizeMB} MB`;
+                fileInfo.classList.remove('hidden');
             } else {
                 videoFileName.classList.add('hidden');
                 uploadVideoBtn.disabled = true;
+                fileInfo.classList.add('hidden');
             }
         });
 
@@ -222,6 +270,11 @@
                 fileName.textContent = files[0].name;
                 fileName.classList.remove('hidden');
                 uploadBtn.disabled = false;
+                
+                // Show file size
+                const fileSizeMB = (files[0].size / (1024 * 1024)).toFixed(2);
+                fileSizeSpan.textContent = `${fileSizeMB} MB`;
+                fileInfo.classList.remove('hidden');
             }
         }
 
@@ -233,6 +286,11 @@
                 videoFileName.textContent = files[0].name;
                 videoFileName.classList.remove('hidden');
                 uploadVideoBtn.disabled = false;
+                
+                // Show file size
+                const fileSizeMB = (files[0].size / (1024 * 1024)).toFixed(2);
+                fileSizeSpan.textContent = `${fileSizeMB} MB`;
+                fileInfo.classList.remove('hidden');
             }
         }
 
@@ -255,6 +313,11 @@
                             fileName.classList.remove('hidden');
                             uploadBtn.disabled = false;
 
+                            // Show file size
+                            const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                            fileSizeSpan.textContent = `${fileSizeMB} MB`;
+                            fileInfo.classList.remove('hidden');
+
                             // Show preview
                             const preview = document.getElementById('preview');
                             preview.src = URL.createObjectURL(blob);
@@ -269,6 +332,36 @@
                 console.error('Failed to read clipboard:', err);
                 alert('Failed to access clipboard. Make sure you have clipboard permissions.');
             }
+        });
+
+        // Check video size before upload
+        function checkVideoSize() {
+            const file = videoInput.files[0];
+            if (!file) return;
+
+            const fileSizeMB = file.size / (1024 * 1024);
+            
+            if (fileSizeMB > 5) {
+                // Show warning modal
+                videoSizeModal.classList.remove('hidden');
+            } else {
+                // Proceed with upload if under 5MB
+                uploadVideo();
+            }
+        }
+
+        // Modal event handlers
+        closeModalBtn.addEventListener('click', () => {
+            videoSizeModal.classList.add('hidden');
+        });
+
+        cancelUploadBtn.addEventListener('click', () => {
+            videoSizeModal.classList.add('hidden');
+        });
+
+        confirmUploadBtn.addEventListener('click', () => {
+            videoSizeModal.classList.add('hidden');
+            uploadVideo();
         });
 
         // Upload image function
@@ -332,7 +425,7 @@
             }
         }
 
-        // Upload video function yang sudah diperbaiki
+        // Upload video function
         async function uploadVideo() {
             const file = videoInput.files[0];
 
@@ -341,28 +434,20 @@
                 return;
             }
 
-            // Check file size (50MB limit)
-            if (file.size > 50 * 1024 * 1024) {
-                alert('File size exceeds 50MB limit!');
-                return;
-            }
-
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('upload_preset', 'video_preset'); // Tambahkan ini
+            formData.append('upload_preset', 'video_preset');
 
             try {
                 uploadVideoBtn.disabled = true;
                 uploadVideoBtn.textContent = 'Uploading...';
 
-                // Gunakan endpoint khusus untuk video
                 const response = await fetch('/api/upload-video', {
                     method: 'POST',
                     body: formData
                 });
 
                 if (!response.ok) {
-                    // Handle error response yang bukan JSON
                     const errorText = await response.text();
                     throw new Error(errorText || 'Upload failed');
                 }
@@ -423,6 +508,7 @@
             uploadVideoBtn.disabled = true;
             uploadBtn.textContent = 'Upload Image';
             uploadVideoBtn.textContent = 'Upload Video';
+            fileInfo.classList.add('hidden');
 
             // Reset to image tab
             imageTab.click();
