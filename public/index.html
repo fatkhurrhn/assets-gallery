@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assets by Thur</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
     <script>
         tailwind.config = {
             theme: {
@@ -28,21 +29,23 @@
         }
     </script>
 </head>
+
 <body class="font-poppins bg-[#f5f7ff] min-h-screen p-5">
     <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden p-6 md:p-8">
         <h1 class="text-primary text-2xl md:text-3xl font-semibold text-center mb-2">Assets by Thur [updated]</h1>
         <p class="text-light-text text-center mb-8">Upload gambar/video dan dapatkan link dengan mudah</p>
-        
+
         <div class="flex justify-center mb-6">
             <div class="flex space-x-2">
                 <button id="imageTab" class="px-4 py-2 rounded-lg bg-primary text-white font-medium">Image</button>
                 <button id="videoTab" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium">Video</button>
             </div>
         </div>
-        
+
         <!-- Image Upload Section -->
         <div id="imageUploadSection">
-            <div id="dropArea" class="border-2 border-dashed border-gray-300 rounded-xl p-6 md:p-8 text-center bg-gray-50 hover:border-primary hover:bg-primary/5 transition-colors duration-300 mb-6">
+            <div id="dropArea"
+                class="border-2 border-dashed border-gray-300 rounded-xl p-6 md:p-8 text-center bg-gray-50 hover:border-primary hover:bg-primary/5 transition-colors duration-300 mb-6">
                 <label for="fileInput" class="cursor-pointer">
                     <div class="text-5xl mb-4 text-primary">📁</div>
                     <div class="text-lg font-medium mb-1">Pilih gambar, seret ke sini, atau paste</div>
@@ -50,24 +53,27 @@
                 </label>
                 <div id="fileName" class="text-primary text-sm mt-3 p-2 bg-primary/10 rounded-md hidden"></div>
                 <input type="file" id="fileInput" accept="image/*" class="hidden">
-                
+
                 <div class="mt-4">
-                    <button id="pasteBtn" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-700 font-medium transition-colors">
+                    <button id="pasteBtn"
+                        class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-700 font-medium transition-colors">
                         <i class="ri-clipboard-line mr-2"></i>Paste from Clipboard
                     </button>
                 </div>
             </div>
-            
+
             <div class="flex justify-center">
-                <button id="uploadBtn" onclick="uploadImage()" disabled class="px-6 py-3 bg-primary hover:bg-primary-hover text-white font-medium rounded-lg w-full max-w-xs transition-all hover:-translate-y-0.5 hover:shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none">
+                <button id="uploadBtn" onclick="uploadImage()" disabled
+                    class="px-6 py-3 bg-primary hover:bg-primary-hover text-white font-medium rounded-lg w-full max-w-xs transition-all hover:-translate-y-0.5 hover:shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none">
                     Upload Image
                 </button>
             </div>
         </div>
-        
+
         <!-- Video Upload Section (hidden by default) -->
         <div id="videoUploadSection" class="hidden">
-            <div id="videoDropArea" class="border-2 border-dashed border-gray-300 rounded-xl p-6 md:p-8 text-center bg-gray-50 hover:border-primary hover:bg-primary/5 transition-colors duration-300 mb-6">
+            <div id="videoDropArea"
+                class="border-2 border-dashed border-gray-300 rounded-xl p-6 md:p-8 text-center bg-gray-50 hover:border-primary hover:bg-primary/5 transition-colors duration-300 mb-6">
                 <label for="videoInput" class="cursor-pointer">
                     <div class="text-5xl mb-4 text-primary">🎬</div>
                     <div class="text-lg font-medium mb-1">Pilih video atau seret ke sini</div>
@@ -76,33 +82,37 @@
                 <div id="videoFileName" class="text-primary text-sm mt-3 p-2 bg-primary/10 rounded-md hidden"></div>
                 <input type="file" id="videoInput" accept="video/*" class="hidden">
             </div>
-            
+
             <div class="flex justify-center">
-                <button id="uploadVideoBtn" onclick="uploadVideo()" disabled class="px-6 py-3 bg-primary hover:bg-primary-hover text-white font-medium rounded-lg w-full max-w-xs transition-all hover:-translate-y-0.5 hover:shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none">
+                <button id="uploadVideoBtn" onclick="uploadVideo()" disabled
+                    class="px-6 py-3 bg-primary hover:bg-primary-hover text-white font-medium rounded-lg w-full max-w-xs transition-all hover:-translate-y-0.5 hover:shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none">
                     Upload Video
                 </button>
             </div>
         </div>
-        
+
         <!-- Result Section -->
         <div id="result" class="hidden mt-8 animate-fade-in">
             <h3 class="text-primary text-xl font-medium mb-4">Your Asset URL:</h3>
             <div id="successMessage" class="text-success font-medium text-center mb-4 hidden">Upload successful!</div>
-            
+
             <div class="relative mb-6">
                 <input type="text" id="assetLink" readonly class="w-full p-3 pr-12 border border-gray-300 rounded-lg">
-                <button id="copyBtn" title="Copy to clipboard" class="absolute right-1 top-1 bottom-1 w-10 bg-primary hover:bg-primary-hover text-white rounded flex items-center justify-center transition-colors">
+                <button id="copyBtn" title="Copy to clipboard"
+                    class="absolute right-1 top-1 bottom-1 w-10 bg-primary hover:bg-primary-hover text-white rounded flex items-center justify-center transition-colors">
                     <i class="ri-file-copy-2-line"></i>
                 </button>
             </div>
-            
+
             <div id="previewContainer" class="mb-6">
                 <img id="preview" class="max-w-full max-h-96 mx-auto rounded-lg shadow-md hidden">
-                <video id="videoPreview" controls class="max-w-full max-h-96 mx-auto rounded-lg shadow-md hidden"></video>
+                <video id="videoPreview" controls
+                    class="max-w-full max-h-96 mx-auto rounded-lg shadow-md hidden"></video>
             </div>
-            
+
             <div class="flex justify-center">
-                <button onclick="resetForm()" class="px-6 py-3 bg-white border border-primary text-primary hover:bg-primary/5 font-medium rounded-lg w-full max-w-xs transition-all hover:-translate-y-0.5 hover:shadow-md">
+                <button onclick="resetForm()"
+                    class="px-6 py-3 bg-white border border-primary text-primary hover:bg-primary/5 font-medium rounded-lg w-full max-w-xs transition-all hover:-translate-y-0.5 hover:shadow-md">
                     Upload Another
                 </button>
             </div>
@@ -125,7 +135,7 @@
         const videoTab = document.getElementById('videoTab');
         const imageUploadSection = document.getElementById('imageUploadSection');
         const videoUploadSection = document.getElementById('videoUploadSection');
-        
+
         // Tab switching
         imageTab.addEventListener('click', () => {
             imageTab.classList.remove('bg-gray-200', 'text-gray-700');
@@ -135,7 +145,7 @@
             imageUploadSection.classList.remove('hidden');
             videoUploadSection.classList.add('hidden');
         });
-        
+
         videoTab.addEventListener('click', () => {
             videoTab.classList.remove('bg-gray-200', 'text-gray-700');
             videoTab.classList.add('bg-primary', 'text-white');
@@ -144,9 +154,9 @@
             videoUploadSection.classList.remove('hidden');
             imageUploadSection.classList.add('hidden');
         });
-        
+
         // Show selected file name and enable upload button
-        fileInput.addEventListener('change', function() {
+        fileInput.addEventListener('change', function () {
             if (this.files.length > 0) {
                 fileName.textContent = this.files[0].name;
                 fileName.classList.remove('hidden');
@@ -156,8 +166,8 @@
                 uploadBtn.disabled = true;
             }
         });
-        
-        videoInput.addEventListener('change', function() {
+
+        videoInput.addEventListener('change', function () {
             if (this.files.length > 0) {
                 videoFileName.textContent = this.files[0].name;
                 videoFileName.classList.remove('hidden');
@@ -167,43 +177,43 @@
                 uploadVideoBtn.disabled = true;
             }
         });
-        
+
         // Drag and drop functionality for images
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropArea.addEventListener(eventName, preventDefaults, false);
         });
-        
+
         // Drag and drop functionality for videos
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             videoDropArea.addEventListener(eventName, preventDefaults, false);
         });
-        
+
         function preventDefaults(e) {
             e.preventDefault();
             e.stopPropagation();
         }
-        
+
         ['dragenter', 'dragover'].forEach(eventName => {
             dropArea.addEventListener(eventName, highlight, false);
             videoDropArea.addEventListener(eventName, highlight, false);
         });
-        
+
         ['dragleave', 'drop'].forEach(eventName => {
             dropArea.addEventListener(eventName, unhighlight, false);
             videoDropArea.addEventListener(eventName, unhighlight, false);
         });
-        
+
         function highlight() {
             this.classList.add('border-primary', 'bg-primary/10');
         }
-        
+
         function unhighlight() {
             this.classList.remove('border-primary', 'bg-primary/10');
         }
-        
+
         dropArea.addEventListener('drop', handleDrop, false);
         videoDropArea.addEventListener('drop', handleVideoDrop, false);
-        
+
         function handleDrop(e) {
             const dt = e.dataTransfer;
             const files = dt.files;
@@ -214,7 +224,7 @@
                 uploadBtn.disabled = false;
             }
         }
-        
+
         function handleVideoDrop(e) {
             const dt = e.dataTransfer;
             const files = dt.files;
@@ -225,7 +235,7 @@
                 uploadVideoBtn.disabled = false;
             }
         }
-        
+
         // Paste from clipboard functionality
         pasteBtn.addEventListener('click', async () => {
             try {
@@ -235,21 +245,21 @@
                         if (type.startsWith('image/')) {
                             const blob = await clipboardItem.getType(type);
                             const file = new File([blob], 'pasted-image.png', { type: blob.type });
-                            
+
                             // Create a new DataTransfer object and add the file
                             const dataTransfer = new DataTransfer();
                             dataTransfer.items.add(file);
                             fileInput.files = dataTransfer.files;
-                            
+
                             fileName.textContent = 'pasted-image.png';
                             fileName.classList.remove('hidden');
                             uploadBtn.disabled = false;
-                            
+
                             // Show preview
                             const preview = document.getElementById('preview');
                             preview.src = URL.createObjectURL(blob);
                             preview.classList.remove('hidden');
-                            
+
                             return;
                         }
                     }
@@ -260,11 +270,11 @@
                 alert('Failed to access clipboard. Make sure you have clipboard permissions.');
             }
         });
-        
+
         // Upload image function
         async function uploadImage() {
             const file = fileInput.files[0];
-            
+
             if (!file) {
                 alert('Please select an image first!');
                 return;
@@ -287,32 +297,32 @@
                     method: 'POST',
                     body: formData
                 });
-                
+
                 if (!response.ok) {
                     const error = await response.json();
                     throw new Error(error.error || 'Upload failed');
                 }
-                
+
                 const result = await response.json();
-                
+
                 document.getElementById('preview').src = result.url;
                 document.getElementById('assetLink').value = result.url;
                 document.getElementById('result').classList.remove('hidden');
-                
+
                 // Hide video preview if shown
                 document.getElementById('videoPreview').classList.add('hidden');
                 document.getElementById('preview').classList.remove('hidden');
-                
+
                 // Scroll to result
                 document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
-                
+
                 // Show success message
                 const successMessage = document.getElementById('successMessage');
                 successMessage.classList.remove('hidden');
                 setTimeout(() => {
                     successMessage.classList.add('hidden');
                 }, 3000);
-                
+
                 uploadBtn.textContent = 'Upload Image';
             } catch (error) {
                 console.error('Error:', error);
@@ -321,11 +331,11 @@
                 uploadBtn.textContent = 'Upload Image';
             }
         }
-        
-        // Upload video function
+
+        // Upload video function yang sudah diperbaiki
         async function uploadVideo() {
             const file = videoInput.files[0];
-            
+
             if (!file) {
                 alert('Please select a video first!');
                 return;
@@ -339,41 +349,41 @@
 
             const formData = new FormData();
             formData.append('file', file);
+            formData.append('upload_preset', 'video_preset'); // Tambahkan ini
 
             try {
                 uploadVideoBtn.disabled = true;
                 uploadVideoBtn.textContent = 'Uploading...';
 
-                const response = await fetch('/api/upload', {
+                // Gunakan endpoint khusus untuk video
+                const response = await fetch('/api/upload-video', {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error || 'Upload failed');
+                    // Handle error response yang bukan JSON
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Upload failed');
                 }
-                
+
                 const result = await response.json();
-                
+
                 document.getElementById('videoPreview').src = result.url;
                 document.getElementById('assetLink').value = result.url;
                 document.getElementById('result').classList.remove('hidden');
-                
-                // Hide image preview if shown
+
                 document.getElementById('preview').classList.add('hidden');
                 document.getElementById('videoPreview').classList.remove('hidden');
-                
-                // Scroll to result
+
                 document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
-                
-                // Show success message
+
                 const successMessage = document.getElementById('successMessage');
                 successMessage.classList.remove('hidden');
                 setTimeout(() => {
                     successMessage.classList.add('hidden');
                 }, 3000);
-                
+
                 uploadVideoBtn.textContent = 'Upload Video';
             } catch (error) {
                 console.error('Error:', error);
@@ -382,25 +392,25 @@
                 uploadVideoBtn.textContent = 'Upload Video';
             }
         }
-        
+
         // Copy link function
-        copyBtn.addEventListener('click', function() {
+        copyBtn.addEventListener('click', function () {
             const link = document.getElementById('assetLink');
             link.select();
             document.execCommand('copy');
-            
+
             // Change button to success state
             const icon = copyBtn.querySelector('i');
             icon.className = 'ri-check-line';
             copyBtn.classList.add('bg-success', 'hover:bg-success');
-            
+
             // Reset
             setTimeout(() => {
                 icon.className = 'ri-file-copy-2-line';
                 copyBtn.classList.remove('bg-success', 'hover:bg-success');
             }, 500);
         });
-        
+
         function resetForm() {
             fileInput.value = '';
             videoInput.value = '';
@@ -413,13 +423,14 @@
             uploadVideoBtn.disabled = true;
             uploadBtn.textContent = 'Upload Image';
             uploadVideoBtn.textContent = 'Upload Video';
-            
+
             // Reset to image tab
             imageTab.click();
-            
+
             // Scroll back to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
 </body>
+
 </html>
